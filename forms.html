@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Gallery Registration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Times New Roman', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #8B4513, #DAA520);
+            color: white;
+            text-align: center;
+            padding: 40px;
+            position: relative;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="30">🎨</text></svg>');
+            background-repeat: no-repeat;
+            background-position: top 20px left 30px;
+            opacity: 0.3;
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="30">🖼️</text></svg>');
+            background-repeat: no-repeat;
+            background-position: top 20px right 30px;
+            opacity: 0.3;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-style: italic;
+        }
+        .form-container {
+            padding: 40px;
+        }
+        .form-section {
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            margin-bottom: 25px;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #8B4513;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .section-title {
+            color: #8B4513;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            flex: 1;
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #8B4513;
+            box-shadow: 0 0 10px rgba(139, 69, 19, 0.2);
+            transform: scale(1.02);
+        }
+
+        /* Error Styles */
+        .form-group.error input,
+        .form-group.error select,
+        .form-group.error textarea {
+            border-color: #dc3545;
+            background-color: #ffe6e6;
+            animation: shake 0.3s ease-in-out;
+        }
+        .form-group.error .error-msg {
+            display: block;
+        }
+        /* Success Styles */
+        .form-group.success input,
+        .form-group.success select,
+        .form-group.success textarea {
+            border-color: #28a745;
+            background-color: #e6ffe6;
+        }
+        .form-group.success::after {
+            content: '✓';
+            color: #28a745;
+            font-weight: bold;
+            font-size: 1.2rem;
+            float: right;
+            margin-top: -35px;
+            margin-right: 10px;
+        }
+        .error-msg {
+            color: #dc3545;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+            font-weight: bold;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        .radio-group, .checkbox-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .radio-option, .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .radio-option:hover, .checkbox-option:hover {
+            border-color: #8B4513;
+            background-color: #f8f5f0;
+        }
+        .radio-option input, .checkbox-option input {
+            width: auto;
+            margin: 0;
+        }
+        .submit-section {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #ddd;
+        }
+        .submit-btn {
+            background: linear-gradient(135deg, #8B4513, #DAA520);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
+        }
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(139, 69, 19, 0.4);
+        }
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
+        .success-message {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .art-icon {
+            width: 30px;
+            height: 30px;
+            background-size: contain;
+            display: inline-block;
+        }
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+            }  
+            .radio-group, .checkbox-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 Royal Art Gallery</h1>
+            <p>Submit Your Masterpiece for Exhibition</p>
+        </div>
+        <div class="form-container">
+            <div class="success-message" id="successMessage">
+                🎉 Congratulations! Your artwork has been registered successfully. We will contact you soon!
+            </div>
+            <form id="artForm" novalidate>
+                <!-- Personal Information Section -->
+                <div class="form-section">
+                    <h3 class="section-title">👤 Personal Information</h3>
+                    <div class="form-row">
+                        <!-- JS Validation 1: Artist Name -->
+                        <div class="form-group" id="nameGroup">
+                            <label for="artistName">Artist Name *</label>
+                            <input type="text" id="artistName" name="artistName" required>
+                            <div class="error-msg" id="nameError">Artist name must be at least 2 characters long</div>
+                        </div>
+                        <!-- JS Validation 2: Age -->
+                        <div class="form-group" id="ageGroup">
+                            <label for="age">Age *</label>
+                            <input type="number" id="age" name="age" required>
+                            <div class="error-msg" id="ageError">Age must be between 16 and 80</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <!-- HTML5 Validation 1: Email -->
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <!-- JS Validation 3: Phone -->
+                        <div class="form-group" id="phoneGroup">
+                            <label for="phone">Phone Number *</label>
+                            <input type="tel" id="phone" name="phone" required>
+                            <div class="error-msg" id="phoneError">Please enter a valid phone number</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Artwork Information Section -->
+                <div class="form-section">
+                    <h3 class="section-title">🎨 Artwork Information</h3>
+                    <div class="form-row">
+                        <!-- JS Validation 4: Art Category -->
+                        <div class="form-group" id="categoryGroup">
+                            <label for="category">Art Category *</label>
+                            <select id="category" name="category" required>
+                                <option value="">Choose your art category</option>
+                                <option value="painting">🖌️ Painting</option>
+                                <option value="sculpture">🗿 Sculpture</option>
+                                <option value="photography">📸 Photography</option>
+                                <option value="drawing">✏️ Drawing</option>
+                                <option value="digital">💻 Digital Art</option>
+                                <option value="crafts">🧵 Arts & Crafts</option>
+                            </select>
+                            <div class="error-msg" id="categoryError">Please select an art category</div>
+                        </div>
+                        <!-- JS Validation 5: Experience -->
+                        <div class="form-group" id="experienceGroup">
+                            <label for="experience">Years of Experience *</label>
+                            <input type="number" id="experience" name="experience" required>
+                            <div class="error-msg" id="experienceError">Experience must be between 1 and 50 years</div>
+                        </div>
+                    </div>
+                    <!-- JS Validation 6: Artwork Title -->
+                    <div class="form-group" id="titleGroup">
+                        <label for="artworkTitle">Artwork Title *</label>
+                        <input type="text" id="artworkTitle" name="artworkTitle" required>
+                        <div class="error-msg" id="titleError">Artwork title must be at least 3 characters</div>
+                    </div>
+                    <!-- HTML5 Validation 2: Portfolio Website -->
+                    <div class="form-group">
+                        <label for="portfolio">Portfolio Website</label>
+                        <input type="url" id="portfolio" name="portfolio" placeholder="https://yourwebsite.com">
+                    </div>
+                </div>
+                <!-- Exhibition Details Section -->
+                <div class="form-section">
+                    <h3 class="section-title">🏛️ Exhibition Details</h3>
+                    <!-- JS Validation 7: Exhibition Theme -->
+                    <div class="form-group" id="themeGroup">
+                        <label for="theme">Exhibition Theme *</label>
+                        <select id="theme" name="theme" required>
+                            <option value="">Select exhibition theme</option>
+                            <option value="modern">🌟 Modern Art</option>
+                            <option value="classical">🏛️ Classical Art</option>
+                            <option value="abstract">🌀 Abstract Art</option>
+                            <option value="nature">🌿 Nature & Landscape</option>
+                            <option value="portrait">👥 Portrait Art</option>
+                            <option value="street">🏙️ Street Art</option>
+                        </select>
+                        <div class="error-msg" id="themeError">Please select an exhibition theme</div>
+                    </div>
+                    <!-- HTML5 Validation 3: Exhibition Date -->
+                    <div class="form-group">
+                        <label for="exhibitionDate">Preferred Exhibition Date *</label>
+                        <input type="date" id="exhibitionDate" name="exhibitionDate" required>
+                    </div>
+                    <!-- HTML5 Validation 4: Exhibition Type (Radio) -->
+                    <div class="form-group">
+                        <label>Exhibition Type *</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="solo" name="exhibitionType" value="solo" required>
+                                <label for="solo">Solo Exhibition</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="group" name="exhibitionType" value="group" required>
+                                <label for="group">Group Exhibition</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Additional Information Section -->
+                <div class="form-section">
+                    <h3 class="section-title">📝 Additional Information</h3>
+                    <!-- JS Validation 8: Description -->
+                    <div class="form-group" id="descriptionGroup">
+                        <label for="description">Artwork Description *</label>
+                        <textarea id="description" name="description" rows="4" required placeholder="Describe your artwork, inspiration, and techniques used..."></textarea>
+                        <div class="error-msg" id="descriptionError">Description must be at least 30 characters long</div>
+                    </div>
+                    <!-- HTML5 Validation 5: Price Range -->
+                    <div class="form-group">
+                        <label for="priceRange">Price Range (USD)</label>
+                        <input type="range" id="priceRange" name="priceRange" min="100" max="5000" value="1000">
+                        <div style="text-align: center; font-weight: bold; color: #8B4513; margin-top: 5px;">
+                            $<span id="priceDisplay">1000</span>
+                        </div>
+                    </div>
+                    <!-- HTML5 Validation 6: Services (Checkboxes) -->
+                    <div class="form-group">
+                        <label>Additional Services</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="framing" name="services" value="framing">
+                                <label for="framing">🖼️ Professional Framing</label>
+                            </div>
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="delivery" name="services" value="delivery">
+                                <label for="delivery">🚚 Home Delivery</label>
+                            </div>
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="insurance" name="services" value="insurance">
+                                <label for="insurance">🛡️ Art Insurance</label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- HTML5 Validation 7: Terms (Required checkbox) -->
+                    <div class="form-group">
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="terms" name="terms" required>
+                            <label for="terms">I agree to the Gallery Terms and Conditions *</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="submit-section">
+                    <button type="submit" class="submit-btn" id="submitBtn">🎨 Register My Artwork</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        // Price range display update
+        const priceRange = document.getElementById('priceRange');
+        const priceDisplay = document.getElementById('priceDisplay');
+        
+        priceRange.addEventListener('input', function() {
+            priceDisplay.textContent = this.value;
+        });
+        // JavaScript Validation Functions
+        // 1. Validate Artist Name
+        function validateName() {
+            const name = document.getElementById('artistName').value.trim();
+            const nameGroup = document.getElementById('nameGroup');     
+            if (name.length < 2) {
+                nameGroup.className = 'form-group error';
+                return false;
+            } else {
+                nameGroup.className = 'form-group success';
+                return true;
+            }
+        }
+        // 2. Validate Age
+        function validateAge() {
+            const age = parseInt(document.getElementById('age').value);
+            const ageGroup = document.getElementById('ageGroup');      
+            if (age < 16 || age > 80 || isNaN(age)) {
+                ageGroup.className = 'form-group error';
+                return false;
+            } else {
+                ageGroup.className = 'form-group success';
+                return true;
+            }
+        }
+        // 3. Validate Phone
+        function validatePhone() {
+            const phone = document.getElementById('phone').value.trim();
+            const phoneGroup = document.getElementById('phoneGroup');           
+            if (phone.length < 10) {
+                phoneGroup.className = 'form-group error';
+                return false;
+            } else {
+                phoneGroup.className = 'form-group success';
+                return true;
+            }
+        }
+        // 4. Validate Category
+        function validateCategory() {
+            const category = document.getElementById('category').value;
+            const categoryGroup = document.getElementById('categoryGroup');        
+            if (category === '') {
+                categoryGroup.className = 'form-group error';
+                return false;
+            } else {
+                categoryGroup.className = 'form-group success';
+                return true;
+            }
+        }
+        // 5. Validate Experience
+        function validateExperience() {
+            const experience = parseInt(document.getElementById('experience').value);
+            const experienceGroup = document.getElementById('experienceGroup');          
+            if (experience < 1 || experience > 50 || isNaN(experience)) {
+                experienceGroup.className = 'form-group error';
+                return false;
+            } else {
+                experienceGroup.className = 'form-group success';
+                return true;
+            }
+        }
+        // 6. Validate Artwork Title
+        function validateTitle() {
+            const title = document.getElementById('artworkTitle').value.trim();
+            const titleGroup = document.getElementById('titleGroup');    
+            if (title.length < 3) {
+                titleGroup.className = 'form-group error';
+                return false;
+            } else {
+                titleGroup.className = 'form-group success';
+                return true;
+            }
+        }
+        // 7. Validate Theme
+        function validateTheme() {
+            const theme = document.getElementById('theme').value;
+            const themeGroup = document.getElementById('themeGroup');   
+            if (theme === '') {
+                themeGroup.className = 'form-group error';
+                return false;
+            } else {
+                themeGroup.className = 'form-group success';
+                return true;
+            }
+        }
+        // 8. Validate Description
+        function validateDescription() {
+            const description = document.getElementById('description').value.trim();
+            const descriptionGroup = document.getElementById('descriptionGroup'); 
+            if (description.length < 30) {
+                descriptionGroup.className = 'form-group error';
+                return false;
+            } else {
+                descriptionGroup.className = 'form-group success';
+                return true;
+            }
+        }
+        // Add event listeners for real-time validation
+        document.getElementById('artistName').addEventListener('blur', validateName);
+        document.getElementById('age').addEventListener('blur', validateAge);
+        document.getElementById('phone').addEventListener('blur', validatePhone);
+        document.getElementById('category').addEventListener('change', validateCategory);
+        document.getElementById('experience').addEventListener('blur', validateExperience);
+        document.getElementById('artworkTitle').addEventListener('blur', validateTitle);
+        document.getElementById('theme').addEventListener('change', validateTheme);
+        document.getElementById('description').addEventListener('blur', validateDescription);
+        // Form submission
+        document.getElementById('artForm').addEventListener('submit', function(e) {
+            e.preventDefault();          
+            // Run all JavaScript validations
+            const jsValid = validateName() && 
+                           validateAge() && 
+                           validatePhone() && 
+                           validateCategory() && 
+                           validateExperience() && 
+                           validateTitle() && 
+                           validateTheme() && 
+                           validateDescription();
+            // Check HTML5 validations
+            const html5Valid = this.checkValidity();            
+            if (jsValid && html5Valid) {
+                // Show success message
+                document.getElementById('successMessage').style.display = 'block';
+                document.getElementById('artForm').style.display = 'none';
+                window.scrollTo(0, 0);
+            } else {
+                alert('Please fix all errors before submitting your artwork registration!');
+            }
+        });
+        // Set minimum date to today
+        document.getElementById('exhibitionDate').min = new Date().toISOString().split('T')[0];
+    </script>
+</body>
+</html>
